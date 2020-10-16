@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(NeuralNetwork))]
+
 public class CarController : MonoBehaviour
 {
     private Vector3 startPosition, startRotation;
-
+    private NeuralNetwork network;
     [Range(-1f, 1f)]
     public float a, t;
     public float timeSinceStart = 0f;
@@ -15,6 +17,11 @@ public class CarController : MonoBehaviour
     public float distanceMultiplier = 1.4f;
     public float averageSpeedMultiplier = 0.2f;
     public float sensorMultiplier = 0.1f;
+
+    [Header("Network Options")]
+    public int layers = 1;
+    public int neurons = 10;
+
 
     private Vector3 lastPosition;
     private float totalDistancetravelled;
@@ -29,6 +36,10 @@ public class CarController : MonoBehaviour
     {
         startPosition = transform.position;
         startRotation = transform.eulerAngles;
+        network = GetComponent<NeuralNetwork>();
+
+        //For testing, will be removed in future
+        network.initialize(layers, neurons);
     }
 
     // Update is called once per frame
@@ -36,6 +47,9 @@ public class CarController : MonoBehaviour
     {
         inputSensors();
         lastPosition = transform.position;
+
+        (a, t) = network.runNetwork(aSensor, bSensor, cSensor);
+
         moveCar(a, t);
         timeSinceStart += Time.deltaTime;
         calculateFitness();
@@ -45,6 +59,9 @@ public class CarController : MonoBehaviour
 
     public void reset()
     {
+        //For testing, will be removed in future
+        network.initialize(layers, neurons);
+
         timeSinceStart = 0f;
         totalDistancetravelled = 0f;
         avgSpeed = 0f;
@@ -88,21 +105,21 @@ public class CarController : MonoBehaviour
         if(Physics.Raycast(r, out hit))
         {
             aSensor = hit.distance / 20;        // Change denominator value if using a different track. The sensors values are supposed to be between 0 and 1
-            print("A: " + aSensor);             // or slightly above 1
+            Debug.DrawLine(r.origin, hit.point, Color.red);             // or slightly above 1
         }
 
         r.direction = b;
         if (Physics.Raycast(r, out hit))
         {
             bSensor = hit.distance / 20;
-            print("B: " + aSensor);
+            Debug.DrawLine(r.origin, hit.point, Color.red);
         }
 
         r.direction = c;
         if (Physics.Raycast(r, out hit))
         {
             cSensor = hit.distance / 20;
-            print("C: " + aSensor);
+            Debug.DrawLine(r.origin, hit.point, Color.red);
         }
     }
 
