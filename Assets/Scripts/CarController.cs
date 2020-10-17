@@ -37,9 +37,12 @@ public class CarController : MonoBehaviour
         startPosition = transform.position;
         startRotation = transform.eulerAngles;
         network = GetComponent<NeuralNetwork>();
+    }
 
-        //For testing, will be removed in future
-        network.initialize(layers, neurons);
+    public void resetWithNetwork(NeuralNetwork net)
+    {
+        network = net;
+        reset();
     }
 
     // Update is called once per frame
@@ -59,9 +62,6 @@ public class CarController : MonoBehaviour
 
     public void reset()
     {
-        //For testing, will be removed in future
-        network.initialize(layers, neurons);
-
         timeSinceStart = 0f;
         totalDistancetravelled = 0f;
         avgSpeed = 0f;
@@ -73,7 +73,12 @@ public class CarController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        reset();
+        death();
+    }
+
+    void death()
+    {
+        GameObject.FindObjectOfType<geneticAlgorithm>().death(overallFitness, network);
     }
 
     void calculateFitness()
@@ -85,11 +90,11 @@ public class CarController : MonoBehaviour
 
         if (timeSinceStart > 20 && overallFitness < 40)
         {
-            reset();
+            death();
         }
         if (overallFitness >= 1000)
         {
-            reset();
+            death();
         }
     }
 
