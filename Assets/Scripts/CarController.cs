@@ -92,10 +92,10 @@ public class CarController : MonoBehaviour
         {
             death();
         }
-        if (overallFitness >= 1000)
+        /*if (overallFitness >= 1000)
         {
             death();
-        }
+        }*/
     }
 
     private void inputSensors()
