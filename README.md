@@ -1,5 +1,6 @@
 # Self-driving-car
 
+<b>Demo Video</b><br>
 [![Self driving car video](https://img.youtube.com/vi/r71xFCSzzuc/0.jpg)](https://www.youtube.com/watch?v=r71xFCSzzuc)
 
 This is a project on Neural Networks and Genetic Algorithm made on Unity engine.
